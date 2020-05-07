@@ -1,0 +1,25 @@
+{
+  "name": "@shopgate-project/cart-gifts",
+  "version": "1.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:shopgate-professional-services/ext-cart-gifts.git"
+  },
+  "scripts": {
+    "test": "echo TBA",
+    "lint": "standard"
+  },
+  "dependencies": {
+    "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "standard": "^14.3.3"
+  },
+  "standard": {
+    "env": [
+      "mocha"
+    ]
+  }
+}

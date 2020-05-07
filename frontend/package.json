@@ -1,0 +1,23 @@
+{
+  "name": "@shopgate-project/cart-gifts",
+  "version": "1.0.0",
+  "description": "",
+  "license": "Apache 2.0",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:shopgate-professional-services/ext-cart-gifts.git"
+  },
+  "dependencies": {
+    "jexl": "^2.2.2"
+  },
+  "devDependencies": {
+    "@shopgate/engage": "^6.11.0",
+    "@shopgate/eslint-config": "^6.11.0"
+  },
+  "peerDependencies": {
+    "@shopgate/engage": "^6.11.0",
+    "react": "~16.12.0",
+    "react-redux": "^5.1.2",
+    "reselect": "^3.0.1"
+  }
+}
