@@ -1,6 +1,6 @@
 # Shopgate Connect - Cart Gifts
 
-This extension allow merchants to have cart gifts (free items, etc).
+This extension allows merchants to have cart gifts (free items, etc).
 
 ## About Shopgate
 
