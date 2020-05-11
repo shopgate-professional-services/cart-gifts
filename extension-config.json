@@ -2,12 +2,21 @@
   "version": "1.0.0",
   "id": "@shopgate-project/cart-gifts",
   "configuration": {
-    "endpoint": {
+    "configEndpoint": {
       "type": "admin",
       "destination": "backend",
       "params": {
-        "type": "string",
+        "type": "text",
         "label": "External endpoint (url) to pull items configuration"
+      },
+      "default": null
+    },
+    "staticConfig": {
+      "type": "admin",
+      "destination": "backend",
+      "params": {
+        "type": "json",
+        "label": "Static configuration if endpoint is not given"
       },
       "default": null
     },
@@ -15,7 +24,7 @@
       "type": "admin",
       "destination": "both",
       "params": {
-        "type": "string",
+        "type": "text",
         "label": "TTL (sec) to cache configuration"
       },
       "default": 3600

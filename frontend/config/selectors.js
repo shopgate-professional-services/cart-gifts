@@ -24,7 +24,7 @@ export const getConfig = createSelector(
 /**
  * @returns {Object}
  */
-export const getAllProductIds = createSelector(
+export const getGiftProductIds = createSelector(
   getConfig,
   (config) => {
     if (!config) {

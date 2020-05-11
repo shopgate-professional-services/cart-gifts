@@ -45,18 +45,18 @@ export default (subscribe) => {
   subscribe(cartReceived$, async ({ dispatch, getState }) => {
     const state = getState();
     const { productIds } = await getMatchedConfig(state) || {};
-    const cartProducts = getCartGiftProducts(state);
+    const cartGiftProducts = getCartGiftProducts(state);
 
     if (!productIds) {
-      if (cartProducts) {
-        dispatch(deleteProductsFromCart(cartProducts.map(c => c.id)));
+      if (cartGiftProducts) {
+        dispatch(deleteProductsFromCart(cartGiftProducts.map(c => c.id)));
       }
       return;
     }
 
-    if (cartProducts) {
+    if (cartGiftProducts) {
       // Delete obsolete
-      const deleteIds = cartProducts
+      const deleteIds = cartGiftProducts
         .filter(c => !productIds.includes(c.product.id))
         .map(c => c.id);
       if (deleteIds.length) {
@@ -66,8 +66,8 @@ export default (subscribe) => {
 
     // Add missing
     let add = productIds;
-    if (cartProducts) {
-      add = productIds.filter(pId => !cartProducts.find(c => c.product.id === pId));
+    if (cartGiftProducts) {
+      add = productIds.filter(pId => !cartGiftProducts.find(c => c.product.id === pId));
     }
 
     if (add.length) {

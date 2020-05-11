@@ -1,10 +1,10 @@
-import { REQUEST_CONFIG, RECEIVE_CONFIG } from './constants';
+import { CART_GIFTS_REQUEST_CONFIG, CART_GIFTS_RECEIVE_CONFIG, CART_GIFTS_ERROR_CONFIG } from './constants';
 
 /**
  * @return {Object}
  */
 export const requestConfig = () => ({
-  type: REQUEST_CONFIG,
+  type: CART_GIFTS_REQUEST_CONFIG,
 });
 
 /**
@@ -12,6 +12,15 @@ export const requestConfig = () => ({
  * @return {Object}
  */
 export const receiveConfig = config => ({
-  type: RECEIVE_CONFIG,
+  type: CART_GIFTS_RECEIVE_CONFIG,
   config,
+});
+
+/**
+ * @param {Error} error .
+ * @return {Object}
+ */
+export const errorConfig = error => ({
+  type: CART_GIFTS_ERROR_CONFIG,
+  error,
 });

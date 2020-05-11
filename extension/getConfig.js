@@ -9,26 +9,24 @@ const requestPromisified = promisify(request)
  * @returns {Promise<{drawings}>}
  */
 module.exports = async (context) => {
+  if (!context.config.configEndpoint && !context.config.staticConfig) {
+    return { config: [] }
+  }
+
+  // Static config
+  if (!context.config.configEndpoint) {
+    return { config: context.config.staticConfig || [] }
+  }
+
+  // Dynamic config
   const { ttl, config } = await context.storage.extension.get('config') || {}
   if (ttl && ttl > Date.now() && config) {
     return { config }
   }
 
-  if (!context.config.endpoint) {
-    context.log.warn('Endpoint is not configured')
-
-    await context.storage.extension.set('config', {
-      ttl: Date.now() + context.config.configTTL * 1000,
-      config: []
-    })
-    return {
-      config: []
-    }
-  }
-
   try {
     const { body } = await requestPromisified({
-      uri: context.config.endpoint,
+      uri: context.config.configEndpoint,
       json: true,
       timeout: 2000
     })
@@ -50,7 +48,7 @@ module.exports = async (context) => {
     })
     return { config: body }
   } catch (err) {
-    context.log.warn(err, 'Endpoint error')
+    context.log.error(err, 'Endpoint error')
     return {
       config: []
     }

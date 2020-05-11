@@ -9,7 +9,8 @@
 
 /**
  * @typedef {Object} ExtensionConfig
- * @property {string} endpoint
+ * @property {string} configEndpoint
+ * @property {string} staticConfig
  * @property {number} configTTL
  */
 

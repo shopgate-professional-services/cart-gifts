@@ -5,7 +5,8 @@ This extension allow merchants to have cart gifts (free items, etc).
 ## Configuration
 
 Set the following values in your Shopgate Connect Admin:
-* `endpoint` - (text) endpoint URL to fetch configuration
+* `configEndpoint` - (text) endpoint URL to fetch configuration
+* `staticConfig` - (text) static configuration
 * `configTTL` - (text) configuration TTL im seconds
 
 The endpoint should provide a JSON file:
@@ -13,12 +14,8 @@ The endpoint should provide a JSON file:
 ```json
 [ 
   { 
-    "expression": "totals[.type == 'grandTotal'].amount > 10 && totals[.type == 'grandTotal'].amount <= 20", 
-    "productIds": ["1"]
-  },
-  {
-    "expression": "totals[.type == 'grandTotal'].amount > 100", 
-    "productIds": ["2", "3"]
+    "expression": "totals[.type == 'grandTotal'].amount > 75", 
+    "productIds": ["4482"]
   }
 ]
 ```

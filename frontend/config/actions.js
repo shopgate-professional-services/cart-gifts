@@ -1,5 +1,5 @@
 import { PipelineRequest, shouldFetchData } from '@shopgate/engage/core';
-import { requestConfig, receiveConfig } from './action-creators';
+import { requestConfig, receiveConfig, errorConfig } from './action-creators';
 import { getConfigState } from './selectors';
 
 /**
@@ -15,7 +15,9 @@ export const fetchConfig = () => (dispatch, getState) => {
 
   const request = new PipelineRequest('shopgate-project.cart-gifts.getConfig').dispatch();
 
-  request.then(({ config }) => dispatch(receiveConfig(config)));
+  request
+    .then(({ config }) => dispatch(receiveConfig(config)))
+    .catch(error => dispatch(errorConfig(error)));
 
   return request;
 };
