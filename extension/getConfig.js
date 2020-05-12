@@ -9,19 +9,21 @@ const requestPromisified = promisify(request)
  * @returns {Promise<{drawings}>}
  */
 module.exports = async (context) => {
-  if (!context.config.configEndpoint && !context.config.staticConfig) {
-    return { config: [] }
-  }
-
-  // Static config
-  if (!context.config.configEndpoint) {
-    return { config: context.config.staticConfig || [] }
-  }
-
-  // Dynamic config
   const { ttl, config } = await context.storage.extension.get('config') || {}
   if (ttl && ttl > Date.now() && config) {
     return { config }
+  }
+
+  if (!context.config.configEndpoint) {
+    context.log.warn('Endpoint is not configured')
+
+    await context.storage.extension.set('config', {
+      ttl: Date.now() + context.config.configTTL * 1000,
+      config: []
+    })
+    return {
+      config: []
+    }
   }
 
   try {

@@ -13,7 +13,7 @@
     },
     "staticConfig": {
       "type": "admin",
-      "destination": "backend",
+      "destination": "frontend",
       "params": {
         "type": "json",
         "label": "Static configuration if endpoint is not given"
@@ -40,6 +40,12 @@
       "id": "config",
       "path": "frontend/config/reducers.js",
       "type": "reducers"
+    },
+    {
+      "id": "CartItems",
+      "path": "frontend/common/portals/CartItems/index.jsx",
+      "target": "cart.item-list",
+      "type": "portals"
     },
     {
       "id": "PdpCTA",

@@ -9,6 +9,8 @@ import {
 } from '@shopgate/engage/cart';
 import { fetchConfig } from './actions';
 import { getCartGiftProducts, getMatchedConfig } from './selectors';
+import { receiveConfig } from './action-creators';
+import { staticConfig } from '../config';
 
 /**
  * Subscriptions
@@ -21,12 +23,9 @@ export default (subscribe) => {
       SHOPGATE_CART_DELETE_PRODUCTS,
     ]);
 
-    dispatch(fetchConfig());
-
     // 6.11.0 vs 6.12.0
     const nextThunk = next || mutableActions.next;
 
-    // Forbid edit gift item
     updateProductsInCart.useBefore((updateData) => {
       const cartGiftProducts = getCartGiftProducts(getState());
       if (cartGiftProducts) {
@@ -40,6 +39,12 @@ export default (subscribe) => {
       }
       return nextThunk(updateData);
     });
+
+    if (staticConfig) {
+      dispatch(receiveConfig(staticConfig));
+    } else {
+      dispatch(fetchConfig());
+    }
   });
 
   subscribe(cartReceived$, async ({ dispatch, getState }) => {

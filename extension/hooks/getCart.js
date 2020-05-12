@@ -13,6 +13,8 @@ module.exports = async (context, { cartItems }) => {
     return { cartItems }
   }
 
+  const cartProducts = cartItems.filter(i => i.type === 'product')
+
   localCart = localCart
     .map(item => {
       // Cart item was already assigned
@@ -26,7 +28,7 @@ module.exports = async (context, { cartItems }) => {
         return item
       }
 
-      const remoteCartItems = cartItems.filter(cartItem => cartItem.product.id === item.product.id)
+      const remoteCartItems = cartProducts.filter(cartItem => cartItem.product.id === item.product.id)
       if (remoteCartItems.length) {
         if (remoteCartItems.length > 1) {
           context.log.warn({ item, remoteCartItems }, 'Local item is found too many times on remote cart')
