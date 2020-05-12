@@ -32,7 +32,7 @@ module.exports = async (context) => {
     })
 
     if (!Array.isArray(body)) {
-      context.log.warn(body, 'Endpoint response is malformed')
+      context.log.error(body, 'Endpoint response is malformed')
       await context.storage.extension.set('config', {
         ttl: Date.now() + context.config.configTTL * 1000,
         config: []
