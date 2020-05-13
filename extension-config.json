@@ -1,0 +1,84 @@
+{
+  "version": "1.0.0",
+  "id": "@shopgate-project/cart-gifts",
+  "configuration": {
+    "configEndpoint": {
+      "type": "admin",
+      "destination": "backend",
+      "params": {
+        "type": "text",
+        "label": "External endpoint (url) to pull items configuration"
+      },
+      "default": null
+    },
+    "staticConfig": {
+      "type": "admin",
+      "destination": "frontend",
+      "params": {
+        "type": "json",
+        "label": "Static configuration if endpoint is not given"
+      },
+      "default": null
+    },
+    "configTTL": {
+      "type": "admin",
+      "destination": "both",
+      "params": {
+        "type": "text",
+        "label": "TTL (sec) to cache configuration"
+      },
+      "default": 3600
+    }
+  },
+  "components": [
+    {
+      "id": "subscribers",
+      "path": "frontend/config/subscriptions.js",
+      "type": "subscribers"
+    },
+    {
+      "id": "config",
+      "path": "frontend/config/reducers.js",
+      "type": "reducers"
+    },
+    {
+      "id": "CartItems",
+      "path": "frontend/common/portals/CartItems/index.jsx",
+      "target": "cart.item-list",
+      "type": "portals"
+    },
+    {
+      "id": "PdpCTA",
+      "path": "frontend/common/portals/PdpCTA/index.jsx",
+      "target": "product.ctas.add-to-cart",
+      "type": "portals"
+    }
+  ],
+  "steps": [
+    {
+      "path": "extension/hooks/addProducts.js",
+      "hooks": ["shopgate.cart.addProducts.v1:before"],
+      "input": [ {"key": "products"} ],
+      "output": []
+    },
+    {
+      "path": "extension/hooks/deleteProducts.js",
+      "hooks": ["shopgate.cart.deleteProducts.v1:after"],
+      "input": [
+        {"key": "cartItemIds"},
+        {"key": "messages"}
+      ],
+      "output": []
+    },
+    {
+      "path": "extension/hooks/getCart.js",
+      "hooks": ["shopgate.cart.getCart.v1:after"],
+      "input": [
+        {"key": "cartItems"}
+      ],
+      "output": [
+        {"key": "cartItems"}
+      ]
+    }
+  ]
+}

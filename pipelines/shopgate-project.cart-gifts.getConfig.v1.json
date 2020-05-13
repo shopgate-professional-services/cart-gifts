@@ -1,0 +1,22 @@
+{
+  "version": "1",
+  "pipeline": {
+    "id": "shopgate-project.cart-gifts.getConfig.v1",
+    "public": true,
+    "input": [],
+    "output": [
+      {"key": "config", "id": "1"}
+    ],
+    "steps": [
+      {
+        "type": "extension",
+        "id": "@shopgate-project/cart-gifts",
+        "path": "@shopgate-project/cart-gifts/getConfig.js",
+        "input": [],
+        "output": [
+          {"key": "config", "id": "1"}
+        ]
+      }
+    ]
+  }
+}
