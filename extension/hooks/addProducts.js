@@ -4,8 +4,12 @@
  * @param {Object[]} messages
  * @returns {Promise<void>}
  */
-module.exports = async (context, { products }) => {
+module.exports = async (context, { products, messages }) => {
   if (!products.length) {
+    return
+  }
+
+  if (messages && messages.some(({ type }) => type === 'error')) {
     return
   }
 
@@ -16,7 +20,9 @@ module.exports = async (context, { products }) => {
     return
   }
 
-  let localCart = await context.storage.device.get('cart') || []
+  const storage = context.meta.userId ? 'user' : 'device'
+
+  let localCart = await context.storage[storage].get('cart') || []
   localCart = localCart.concat(
     giftProducts
       // Safety duplicate check
@@ -25,12 +31,14 @@ module.exports = async (context, { products }) => {
         product: {
           id: gift.productId
         },
-        metadata: gift.metadata
+        metadata: {
+          ...gift.metadata
+        }
       }))
   )
 
   try {
-    await context.storage.device.set('cart', localCart)
+    await context.storage[storage].set('cart', localCart)
   } catch (err) {
     context.log.warn(err, 'Device storage error')
   }

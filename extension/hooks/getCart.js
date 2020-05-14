@@ -8,58 +8,41 @@ module.exports = async (context, { cartItems }) => {
     return { cartItems }
   }
 
-  let localCart = await context.storage.device.get('cart')
+  const storage = context.meta.userId ? 'user' : 'device'
+
+  let localCart = await context.storage[storage].get('cart')
   if (!localCart || !localCart.length) {
     return { cartItems }
   }
 
-  const cartProducts = cartItems.filter(i => i.type === 'product')
+  const cartItemsProducts = cartItems.filter(i => i.type === 'product')
 
   localCart = localCart
     .map(item => {
-      // Cart item was already assigned
-      if (item.id) {
-        const remoteCartItem = cartItems.find(cartItem => cartItem.id === item.id)
-        if (!remoteCartItem) {
-          context.log.warn({ item }, 'Delete local cart left behind remote cart')
-          // mark to delete
-          delete item.id
-        }
-        return item
-      }
-
-      const remoteCartItems = cartProducts.filter(cartItem => cartItem.product.id === item.product.id)
+      const remoteCartItems = cartItemsProducts.filter(cartItem => cartItem.product.id === item.product.id)
       if (remoteCartItems.length) {
         if (remoteCartItems.length > 1) {
           context.log.warn({ item, remoteCartItems }, 'Local item is found too many times on remote cart')
         }
-        item.id = remoteCartItems[0].id
+        // Assign metadata to remote cart item by product id
+        remoteCartItems[0].metadata = {
+          ...remoteCartItems[0].metadata,
+          ...item.metadata
+        }
+        return item
       } else {
-        context.log.warn({ item }, 'Local cart item is missing on remote cart')
+        context.log.info({ item }, 'Local cart item is missing on remote cart')
+        return null
       }
-
-      return item
-    })
-    .filter(item => !!item.id)
+    }).filter(Boolean)
 
   try {
-    await context.storage.device.set('cart', localCart)
+    await context.storage[storage].set('cart', localCart)
   } catch (err) {
-    context.log.warn(err, 'Device storage error')
+    context.log.warn({ err }, 'Storage error')
   }
 
-  const cartItemsReturn = cartItems.map(cartItem => {
-    const localItem = localCart.find(localItem => localItem.id === cartItem.id)
-    if (!localItem) {
-      return cartItem
-    }
-    return {
-      ...cartItem,
-      metadata: localItem.metadata
-    }
-  })
-
   return {
-    cartItems: cartItemsReturn
+    cartItems
   }
 }

@@ -5,10 +5,10 @@ import {
   SHOPGATE_CART_DELETE_PRODUCTS,
 } from '@shopgate/pwa-common-commerce/cart/constants/Pipelines';
 import {
-  addProductsToCart, deleteProductsFromCart, updateProductsInCart, cartReceived$,
+  addProductsToCart, deleteProductsFromCart, updateProductsInCart, cartReceived$, getCartProducts,
 } from '@shopgate/engage/cart';
 import { fetchConfig } from './actions';
-import { getCartGiftProducts, getMatchedConfig } from './selectors';
+import { getCartGiftProducts, getMatchedConfigs } from './selectors';
 import { receiveConfig } from './action-creators';
 import { staticConfig } from '../config';
 
@@ -49,34 +49,40 @@ export default (subscribe) => {
 
   subscribe(cartReceived$, async ({ dispatch, getState }) => {
     const state = getState();
-    const { productIds } = await getMatchedConfig(state) || {};
+    const matchedConfigs = await getMatchedConfigs(state);
+    const cartProducts = getCartProducts(state);
     const cartGiftProducts = getCartGiftProducts(state);
 
-    if (!productIds) {
+    if (!matchedConfigs) {
       if (cartGiftProducts) {
         dispatch(deleteProductsFromCart(cartGiftProducts.map(c => c.id)));
       }
       return;
     }
 
+    const freeProductIds = matchedConfigs
+      // Flat product ids
+      .reduce((acc, config) => (
+        acc.concat(config.productIds)
+      ), [])
+      // Duplicates
+      .filter((id, i, arr) => arr.indexOf(id) === i);
+
     if (cartGiftProducts) {
       // Delete obsolete
       const deleteIds = cartGiftProducts
-        .filter(c => !productIds.includes(c.product.id))
+        .filter(c => !freeProductIds.includes(c.product.id))
         .map(c => c.id);
       if (deleteIds.length) {
         dispatch(deleteProductsFromCart(deleteIds));
       }
     }
+    const notInCartFreeProductIds = freeProductIds.filter(id => (
+      !cartProducts.find(i => i.product.id === id)
+    ));
 
-    // Add missing
-    let add = productIds;
-    if (cartGiftProducts) {
-      add = productIds.filter(pId => !cartGiftProducts.find(c => c.product.id === pId));
-    }
-
-    if (add.length) {
-      dispatch(addProductsToCart(add.map(pId => ({
+    if (notInCartFreeProductIds.length) {
+      dispatch(addProductsToCart(notInCartFreeProductIds.map(pId => ({
         productId: pId,
         quantity: 1,
         metadata: {

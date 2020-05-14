@@ -57,9 +57,9 @@ export const getCartGiftProducts = createSelector(
 
 /**
  * Evaluate expressions and find matching config
- * @returns {null|{ expression, productIds }}
+ * @returns {null|{ expression, productIds }[]}
  */
-export const getMatchedConfig = createSelector(
+export const getMatchedConfigs = createSelector(
   getConfig,
   state => state.cart,
   async (config, cart) => {
@@ -71,14 +71,15 @@ export const getMatchedConfig = createSelector(
       return null;
     }
 
+    const configs = [];
     for (let i = 0; i < config.length; i += 1) {
       // eslint-disable-next-line no-await-in-loop
       const res = Boolean(await jexl.eval(config[i].expression, cart));
       if (res) {
-        return config[i];
+        configs.push(config[i]);
       }
     }
-    return null;
+    return configs.length ? configs : null;
   }
 );
 
