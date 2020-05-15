@@ -57,17 +57,17 @@
   "steps": [
     {
       "path": "extension/hooks/addProducts.js",
-      "hooks": ["shopgate.cart.addProducts.v1:before"],
-      "input": [ {"key": "products"} ],
+      "hooks": ["shopgate.cart.addProducts.v1:after"],
+      "input": [
+        {"key": "products"},
+        {"key": "messages"}
+      ],
       "output": []
     },
     {
-      "path": "extension/hooks/deleteProducts.js",
-      "hooks": ["shopgate.cart.deleteProducts.v1:after"],
-      "input": [
-        {"key": "cartItemIds"},
-        {"key": "messages"}
-      ],
+      "path": "extension/hooks/migrateLocalCart.js",
+      "hooks": [ "shopgate.cart.getCart.v1:before" ],
+      "input": [],
       "output": []
     },
     {
