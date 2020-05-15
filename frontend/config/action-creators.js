@@ -1,4 +1,9 @@
-import { CART_GIFTS_REQUEST_CONFIG, CART_GIFTS_RECEIVE_CONFIG, CART_GIFTS_ERROR_CONFIG } from './constants';
+import {
+  CART_GIFTS_REQUEST_CONFIG,
+  CART_GIFTS_RECEIVE_CONFIG,
+  CART_GIFTS_ERROR_CONFIG,
+  CART_GIFTS_FIZZLE_PRODUCTS,
+} from './constants';
 
 /**
  * @return {Object}
@@ -23,4 +28,13 @@ export const receiveConfig = config => ({
 export const errorConfig = error => ({
   type: CART_GIFTS_ERROR_CONFIG,
   error,
+});
+
+/**
+ * @param {string[]} productIds .
+ * @return {Object}
+ */
+export const fizzleProducts = productIds => ({
+  type: CART_GIFTS_FIZZLE_PRODUCTS,
+  productIds,
 });

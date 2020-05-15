@@ -4,6 +4,7 @@ import {
   CART_GIFTS_REQUEST_CONFIG,
   CART_GIFTS_RECEIVE_CONFIG,
   CART_GIFTS_ERROR_CONFIG,
+  CART_GIFTS_FIZZLE_PRODUCTS,
 } from './constants';
 import { configTTL } from '../config';
 
@@ -35,8 +36,9 @@ export default (state = {}, action) => {
       };
 
     // Remove failed free products and expressions without products
-    case ERROR_ADD_PRODUCTS_TO_CART: {
-      const failedProductIds = action.products.map(p => p.productId);
+    case ERROR_ADD_PRODUCTS_TO_CART:
+    case CART_GIFTS_FIZZLE_PRODUCTS: {
+      const failedProductIds = action.productIds || action.products.map(p => p.productId);
       return {
         ...state,
         config: state.config
