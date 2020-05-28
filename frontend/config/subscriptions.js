@@ -52,13 +52,9 @@ export default (subscribe) => {
     if (staticConfig) {
       dispatch(receiveConfig(staticConfig));
     } else {
-      dispatch(fetchConfig());
+      await dispatch(fetchConfig());
     }
-  });
 
-  // Fetch products after config is received
-  const receiveConfig$ = main$.filter(({ action }) => action.type === CART_GIFTS_RECEIVE_CONFIG);
-  subscribe(receiveConfig$, ({ dispatch, getState }) => {
     const giftProductIds = getGiftProductIds(getState());
     if (giftProductIds) {
       dispatch(fetchProductsById(giftProductIds));
