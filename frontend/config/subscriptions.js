@@ -14,10 +14,12 @@ import {
   SUCCESS_ADD_PRODUCTS_TO_CART,
   updateProductsInCart,
 } from '@shopgate/engage/cart';
+import { fetchProductsById } from '@shopgate/engage/product';
 import { fetchConfig } from './actions';
-import { getCartGiftProducts, getMatchedConfigs } from './selectors';
+import { getCartGiftProducts, getMatchedConfigs, getGiftProductIds } from './selectors';
 import { fizzleProducts, receiveConfig } from './action-creators';
 import { staticConfig } from '../config';
+import { CART_GIFTS_RECEIVE_CONFIG } from './constants';
 
 /**
  * Subscriptions
@@ -50,7 +52,12 @@ export default (subscribe) => {
     if (staticConfig) {
       dispatch(receiveConfig(staticConfig));
     } else {
-      dispatch(fetchConfig());
+      await dispatch(fetchConfig());
+    }
+
+    const giftProductIds = getGiftProductIds(getState());
+    if (giftProductIds) {
+      dispatch(fetchProductsById(giftProductIds));
     }
   });
 
